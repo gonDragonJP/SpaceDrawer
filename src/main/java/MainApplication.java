@@ -1,4 +1,5 @@
 import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLProfile;
 
 import javafx.application.Application;
@@ -30,7 +31,9 @@ public class MainApplication extends Application{
 			@Override
 			public void init(GL gl) {
 				
-				drawer.init(gl);
+				GL2 gl2 = gl.getGL2();
+				
+				drawer.init(gl2, screenX, screenY);
 			}
 
 			@Override
