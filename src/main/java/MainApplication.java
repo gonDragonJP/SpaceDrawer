@@ -13,7 +13,10 @@ public class MainApplication extends Application{
 		Application.launch(args);
 	}
 	
+	private final int screenX = 320;
+	private final int screenY = 480;
 	private MyGLWinWrap winWrap;
+	private Drawer drawer = new Drawer();
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -26,8 +29,8 @@ public class MainApplication extends Application{
 
 			@Override
 			public void init(GL gl) {
-				// TODO Auto-generated method stub
 				
+				drawer.init(gl);
 			}
 
 			@Override
@@ -38,7 +41,7 @@ public class MainApplication extends Application{
 			
 		});
 		
-		winWrap.getWindow().setSize(500, 500);
+		winWrap.getWindow().setSize(screenX, screenY);
 		winWrap.getWindow().setVisible(true);
 	}
 
