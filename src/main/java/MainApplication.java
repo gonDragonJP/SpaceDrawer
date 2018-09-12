@@ -38,8 +38,10 @@ public class MainApplication extends Application{
 
 			@Override
 			public void render(GL gl) {
-				// TODO Auto-generated method stub
 				
+				GL2 gl2 = gl.getGL2();
+				
+				drawer.draw(gl2);
 			}
 			
 		});
