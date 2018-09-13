@@ -1,17 +1,27 @@
+package spaceDrawer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
 
-import myJOGL.My3DVectorF;
+import myJOGL_v2.My3DVectorF;
+import myJOGL_v2.MyGLTexSheet;
+import myJOGL_v2.MyGLUtil;
+import myJOGL_v2.MyPointF;
 
 public class Drawer {
 
 	private GLU glu = new GLU();
+	private StarMaker starMaker;
 	
-	public void init(GL2 gl2, int screenX, int screenY) {
+	public void init(GL2 gl2, int screenX, int screenY, float fovy) {
 		
-		setupStandard3DProcess(gl2);
+		MyGLUtil.setGL(gl2);
+		
+		starMaker = new StarMaker(this);
+		
+		//setupStandard3DProcess(gl2);
 		
 		gl2.glViewport(0, 0, screenX, screenY);
 		
@@ -19,15 +29,64 @@ public class Drawer {
 		gl2.glLoadIdentity();
 		
 		double aspectratio = (double)screenX / screenY;
-		glu.gluPerspective(45, aspectratio, 0.1, 1000);
+		glu.gluPerspective(fovy, aspectratio, 0.1, 1000);
 		
 		My3DVectorF cameraPoint = new My3DVectorF(0,0,0);
 		My3DVectorF lookPoint = new My3DVectorF(0,0,-1);
 		
 		setView(gl2, cameraPoint, lookPoint);
+		
+		loadTexture(gl2);
+	}
+	
+	private enum TextureFile{
+		
+		dosei(0,"dosei.bmp"),
+		kaiousei(1,"kaiousei.bmp"),
+		moon(2,"moon.bmp"),
+		suisei(3,"suisei.bmp"),
+		nebula1(4,"nebula1.bmp"),
+		nebula2(5,"nebula2.bmp");
+		
+		public int resID;
+		public String fileName;
+	
+		private TextureFile(int id,String fn){
+			
+			resID = id;
+			fileName = fn;
+		}
+	}
+	
+	public ArrayList<MyGLTexSheet> texSheets = new ArrayList<>();
+	
+	public void loadTexture(GL2 gl){
+		
+		MyGLUtil.enableDefaultBlend();
+		MyGLUtil.changeTexColor(null);
+		
+		String dir ="texture\\";
+		
+		for(TextureFile e: TextureFile.values()) {
+			
+			MyGLTexSheet newSheet = new MyGLTexSheet(e.resID, 1,1);
+			newSheet.setTexture(dir + e.fileName);
+		}
 	}
 	
 	public void draw(GL2 gl2) {
+		
+		
+		MyPointF start = new MyPointF(0,0);
+		MyPointF end = new MyPointF(100,100);
+		gl2.glColor3f(1f, 1f, 1f);
+		
+		
+		rotateAndTranslate(gl2,0,0,0,0,0,-10);
+		Icosahedron.draw(gl2, 1);
+		
+		starMaker.drawPointStars(gl2);
+		MyGLUtil.drawLine(start, end);
 		
 		
 		
@@ -83,7 +142,7 @@ public class Drawer {
 	//　ピクセルデータ（テクスチャ等）に関する処理
 	private void setupPixelAsembleProcess(GL2 gl2)
 	{
-		gl2.glEnable(GL2.GL_TEXTURE_2D);					// 二次元テクスチャ有効
+		gl2.glEnable(GL2.GL_TEXTURE_2D);				// 二次元テクスチャ有効
 	}
 
 	//　幾何データとピクセルデータを合わせてフラグメント化する処理のこと
@@ -93,13 +152,25 @@ public class Drawer {
 
 		float[] a = new float[2];
 		FloatBuffer ps = FloatBuffer.wrap(a, 0, 2);
-		gl2.glGetFloatv(GL2.GL_LINE_WIDTH_RANGE,ps);		// 描画線の太さ範囲を取得
-		gl2.glLineWidth(ps.get(0));							// 最も細い線（ps[0])を選択
+		gl2.glGetFloatv(GL2.GL_LINE_WIDTH_RANGE,ps);	// 描画線の太さ範囲を取得
+		gl2.glLineWidth(ps.get(0));						// 最も細い線（ps[0])を選択
 	}
 
 	// フラグメントを加工してバッファに格納する処理のこと
 	private void setupFragmentProcess(GL2 gl2){
 		
-		gl2.glEnable(GL2.GL_DEPTH_TEST);					// デプステスト有効
+		gl2.glEnable(GL2.GL_DEPTH_TEST);				// デプステスト有効
+	}
+	
+	public void rotateAndTranslate
+		(GL2 gl2, float heading, float pitch, float bank, float tx, float ty, float tz){
+		
+		gl2.glMatrixMode(GL2.GL_MODELVIEW);				// 行列変換をモデル座標に適用
+		
+		gl2.glTranslatef(tx,ty,tz);						// 平行移動(回転移動の後なので先にかける）
+		
+		gl2.glRotatef(bank,0,0,1);
+		gl2.glRotatef(pitch,1,0,0);						// 回転(EulerAngles-degree)
+		gl2.glRotatef(heading,0,1,0);
 	}
 }

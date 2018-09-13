@@ -1,4 +1,4 @@
-package myJOGL;
+package myJOGL_v2;
 
 public class MyPointF implements Cloneable{
 	

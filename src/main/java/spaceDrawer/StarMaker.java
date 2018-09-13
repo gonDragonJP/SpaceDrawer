@@ -1,3 +1,4 @@
+package spaceDrawer;
 import java.nio.FloatBuffer;
 
 import com.jogamp.opengl.GL2;
@@ -33,10 +34,19 @@ public class StarMaker {
 	private static class StarData{
 		
 		public float x,y,z,rot,a,r,g,b;
-		public int texture;	
+		public int texIndex;	
 	}
 	
-	public void makeALLData(){
+	private Drawer drawer;
+	
+	public StarMaker(Drawer drawer){
+		
+		this.drawer = drawer;
+		
+		makeAllData();
+	}
+	
+	private void makeAllData(){
 
 		makeStarsData();
 		makePointStarsData();
@@ -61,7 +71,7 @@ public class StarMaker {
 			starData[i].r = (float)Math.random() * 0.2f;
 			starData[i].g = (float)Math.random() * 0.5f;
 			starData[i].b = (float)Math.random() * 0.5f;
-			starData[i].texture = (starData[i].z > textureEnabled) ? 
+			starData[i].texIndex = (starData[i].z > textureEnabled) ? 
 				(int)((float)Math.random() * 7) % 4 : -1;
 		}
 	}
@@ -95,11 +105,11 @@ public class StarMaker {
 			nebulaData[i].x = nebulaData[i].z * (float)Math.tan(angleX * radian);
 			nebulaData[i].y = nebulaData[i].z * (float)Math.tan(angleY * radian);
 			nebulaData[i].rot = 360 * (float)Math.random();
-			nebulaData[i].texture = (int)(32 * (float)Math.random());
+			nebulaData[i].texIndex = (int)(32 * (float)Math.random());
 		}
 	}
 
-	private void drawStars(GL2 gl2){
+	public void drawStars(GL2 gl2){
 
 		gl2.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
 
@@ -114,9 +124,10 @@ public class StarMaker {
 			FloatBuffer arg = FloatBuffer.wrap(model_ambient);
 			gl2.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, arg);
 
-			int texture = starData[i].texture;
-			if(texture !=-1)
-				glBindTexture(GL2.GL_TEXTURE_2D, planetTexture[texture].objectID);
+			int texIndex = starData[i].texIndex;
+			int texGLID = drawer.texSheets.get(texIndex).texture.getTextureObject();
+			if(texIndex !=-1)
+				gl2.glBindTexture(GL2.GL_TEXTURE_2D, texGLID);
 			else
 				gl2.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
@@ -127,12 +138,12 @@ public class StarMaker {
 			
 			gl2.glPushMatrix();
 
-			initGL.rotateAndTranslate(0,0,0,
+			drawer.rotateAndTranslate(gl2, 0,0,0,
 				starData[i].x,
 				starData[i].y,
 				starData[i].z
 				);
-			Icosahedron::draw(2);
+			Icosahedron.draw(gl2, 2);
 
 			gl2.glPopMatrix();
 		}
@@ -140,7 +151,7 @@ public class StarMaker {
 		gl2.glPopAttrib();
 	}
 
-	private void drawPointStars(GL2 gl2){
+	public void drawPointStars(GL2 gl2){
 		
 		gl2.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
 
@@ -160,59 +171,62 @@ public class StarMaker {
 			
 			gl2.glPushMatrix();
 
-			initGL.rotateAndTranslate(0,0,0,
+			drawer.rotateAndTranslate(gl2,0,0,0,
 				pointStarData[i].x,
 				pointStarData[i].y,
-				-farthestDistance * 0.95
+				-farthestDistance * 0.95f
 				);
 
-			glBegin(GL_POINTS);
-				glNormal3f(0,0,1);
-				glVertex3f(0,0,0);
-			glEnd();
+			gl2.glBegin(GL2.GL_POINTS);
+				gl2.glNormal3f(0,0,1);
+				gl2.glVertex3f(0,0,0);
+			gl2.glEnd();
 
-			glPopMatrix();
+			gl2.glPopMatrix();
 		}
 
-		glPopAttrib();
+		gl2.glPopAttrib();
 	}
 
-	private void drawNebulae(){
+	public void drawNebulae(GL2 gl2){
 
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
+		gl2.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
 
-		glEnable(GL_BLEND);	
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		glDepthMask(GL_FALSE);
-		glDisable(GL_LIGHTING);
+		gl2.glEnable(GL2.GL_BLEND);	
+		gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE_MINUS_SRC_ALPHA);
+		gl2.glDepthMask(false);
+		gl2.glDisable(GL2.GL_LIGHTING);
 
 		for(int i=0; i<currentNebulaeNumber; i++){
 
-			int texture = nebulaData[i].texture;
-			glBindTexture(GL_TEXTURE_2D, nebulaTexture[texture].objectID);
+			int texIndex = nebulaData[i].texIndex;
+			int texGLID = drawer.texSheets.get(texIndex).texture.getTextureObject();
+			
+			gl2.glBindTexture(GL2.GL_TEXTURE_2D, texGLID);
 
-			glPushMatrix();
-			initGL.rotateAndTranslate(0,0,
+			gl2.glPushMatrix();
+			drawer.rotateAndTranslate(gl2,0,0,
 				nebulaData[i].rot,
 				nebulaData[i].x,
 				nebulaData[i].y,
 				nebulaData[i].z
 				);
-			drawTexRect();
-			glPopMatrix();
+			drawTexRect(gl2);
+			gl2.glPopMatrix();
+			
 		}
 
-		glPopAttrib();
+		gl2.glPopAttrib();
 	}
 
-	private void drawTexRect(){
+	private void drawTexRect(GL2 gl2){
 
-		glBegin(GL_QUADS);
-			glTexCoord2f(0, 0);	glVertex2i(0,   0);
-			glTexCoord2f(1, 0);	glVertex2i(100, 0);
-			glTexCoord2f(1, 1);	glVertex2i(100, 100);
-			glTexCoord2f(0, 1); glVertex2i(0,   100);
-		glEnd();
+		gl2.glBegin(GL2.GL_QUADS);
+			gl2.glTexCoord2f(0, 0);	gl2.glVertex2i(0,   0);
+			gl2.glTexCoord2f(1, 0);	gl2.glVertex2i(100, 0);
+			gl2.glTexCoord2f(1, 1);	gl2.glVertex2i(100, 100);
+			gl2.glTexCoord2f(0, 1); gl2.glVertex2i(0,   100);
+		gl2.glEnd();
 	}
 
 }

@@ -1,29 +1,32 @@
-package myJOGL;
+package myJOGL_v2;
 
+import java.io.InputStream;
+
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
 
-public class TextureSheet {
+public class MyGLTexSheet {
 	
 	public Texture texture;
-	public int textureResID;
+	public int resID;			//リソースとして自分が設定するID
+	public int glTexID;			//GLインターフェイスにバインドされたID
 	public int frameNumberX, frameNumberY;
 	
 	private MyRectF tempRect = new MyRectF(); //回数使われる事があるためメンバにして持ち回します
 	
-	public TextureSheet() {}
+	private MyGLTexSheet() {}
 	
-	public TextureSheet(int texResID, int frameNumberX, int frameNumberY){
+	public MyGLTexSheet(int texResID, int frameNumberX, int frameNumberY){
 
-		set(texResID, frameNumberX, frameNumberY);
-	}
-
-	public void set(int texResID, int frameNumberX, int frameNumberY){
-		
-		texture =MyGLUtil.TextureManager.getTexture(texResID);
-		
-		this.textureResID = texResID;
+		this.resID = texResID;
 		this.frameNumberX = frameNumberX;
 		this.frameNumberY = frameNumberY;
+	}
+
+	public void setTexture(String fileName){
+		
+		texture =MyGLUtil.loadTexture(fileName, resID);
 	}
 	
 	public final MyRectF getFrameUVcoords(int frameNumber){
@@ -39,8 +42,8 @@ public class TextureSheet {
 		return tempRect;
 	}
 	
-	public void deleteTexture(){
+	public void deleteTexture(GL2 gl2){
 		
-		MyGLUtil.TextureManager.deleteTexture(textureResID);
+		texture.destroy(gl2);
 	}
 }

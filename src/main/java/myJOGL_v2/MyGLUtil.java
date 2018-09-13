@@ -1,4 +1,4 @@
-package myJOGL;
+package myJOGL_v2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -163,58 +163,41 @@ public class MyGLUtil {
 	}
 	
 	
-	public static final boolean loadTexture(String fileName, int resID){
+	public static final Texture loadTexture (String fileName, int resID){
 		
 		Texture texture = null;
 		
+		int beginIndex = fileName.length() -2;
+		int endIndex = fileName.length();
+		String suffix = fileName.substring(beginIndex, endIndex);
+		String format;
+		
+		switch(suffix) {
+		
+			case "png": format = TextureIO.PNG; break;
+			case "bmp": format = TextureIO.JPG; break;
+			default:
+				return null;
+		}
+		
 		InputStream resourceStream = MyGLUtil.class.getResourceAsStream(fileName);
 		try {
-			texture = TextureIO.newTexture(resourceStream, false, TextureIO.PNG);
+			texture = TextureIO.newTexture(resourceStream, false, format);
 		
 		} catch (Exception e) {
 			
 			e.printStackTrace();
 			if(texture !=null) texture.destroy(gl);
-			return false;
+			return null;
 		}
 		
-		TextureManager.addTexture(resID, texture);
-		
-		return true;
+		return texture;
 	}
 	
 	public static void enableDefaultBlend(){
 		
 		gl.glEnable(GL2.GL_BLEND);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-	}
-	
-	public static class TextureManager{
-		
-		private static Map<Integer, Texture> textures
-			= new Hashtable<Integer, Texture>();
-		
-		public static void addTexture(int resID, Texture texture){
-			textures.put(resID, texture);
-		}
-		
-		public static Texture getTexture(int resID){
-			return textures.get(resID);
-		}
-		
-		public static void deleteTexture(int resID){
-			
-			Texture texture = textures.get(resID);
-			texture.destroy(gl);
-			textures.remove(resID);
-		}
-		
-		public static void deleteAll(){
-			List<Integer> keys = new ArrayList<Integer>(textures.keySet());
-			for(Integer key : keys){
-				deleteTexture(key);
-			}
-		}
 	}
 	
 	public static float[] textureSTCoords ={
@@ -237,9 +220,9 @@ public class MyGLUtil {
 	public static float[] vertices = new float [8];
 	static float vLeft, vRight, vTop, vBottom;
 	
-	public static void drawTexture(MyPointF center, MyPointF size, int resID){
+	public static void drawTexture(MyPointF center, MyPointF size, Texture texture){
 		
-		int texObject = TextureManager.getTexture(resID).getTextureObject();
+		int texObject = texture.getTextureObject();
 		
 		vLeft = center.x - size.x / 2;
 		vTop = center.y + size.y / 2;
@@ -268,7 +251,7 @@ public class MyGLUtil {
 		gl.glDisable(GL2.GL_TEXTURE_2D);
 	}
 	
-	private static TextureSheet fontSheet = new TextureSheet();
+	private static MyGLTexSheet fontSheet;
 	private static int asciiOffset;
 	
 	private static MyRectF fontRect = new MyRectF();
@@ -278,9 +261,11 @@ public class MyGLUtil {
 	public static void setupFont
 			(String fileName, int resID, int nx, int ny, int offset){
 		
-		if(!loadTexture(fileName, resID)) return;
+		Texture texture = loadTexture(fileName, resID);
+		if(texture == null) return;
 		
-		fontSheet.set(resID, nx, ny);
+		fontSheet = new MyGLTexSheet(resID, nx, ny);
+		fontSheet.setTexture(fileName);
 		asciiOffset = offset;
 	}
 	
@@ -307,7 +292,7 @@ public class MyGLUtil {
 			
 			fontCenter.set(drawCenterX, drawCenterY);
 			fontSize.set(drawChrSizeX, drawChrSizeY);
-			drawTexture(fontCenter, fontSize, fontSheet.textureResID);
+			drawTexture(fontCenter, fontSize, fontSheet.texture);
 		}
 	}
 	

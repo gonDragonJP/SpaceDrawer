@@ -1,4 +1,4 @@
-package myJOGL;
+package myJOGL_v2;
 
 import com.jogamp.newt.event.WindowAdapter;
 import com.jogamp.newt.event.WindowEvent;
