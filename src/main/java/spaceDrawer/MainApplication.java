@@ -5,6 +5,7 @@ import com.jogamp.opengl.GLProfile;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import myJOGL_v2.MyGLUtil;
 import myJOGL_v2.MyGLWinWrap;
 import myJOGL_v2.MyGLWinWrap.MyRenderable;
 
@@ -17,7 +18,7 @@ public class MainApplication extends Application{
 	
 	private final int screenX = 320;
 	private final int screenY = 480;
-	private final int fovy = 45;	//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
+	private final int fovy = 90;	//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
 	private MyGLWinWrap winWrap;
 	private Drawer drawer = new Drawer();
 
@@ -34,6 +35,7 @@ public class MainApplication extends Application{
 			public void init(GL gl) {
 				
 				GL2 gl2 = gl.getGL2();
+				MyGLUtil.setGL(gl2);
 				
 				drawer.init(gl2, screenX, screenY, fovy);
 			}

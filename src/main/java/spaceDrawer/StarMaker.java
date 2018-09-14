@@ -14,10 +14,6 @@ public class StarMaker {
 	int currentNebulaeNumber      =50 ;
 	float distanceNebulaNearest =500;
 	int backGroundPointStars =3000;
-	
-	float viewAngleX = 45;
-	float viewAngleY = 45;
-	final float radian = 3.14159f/180;
 
 	private static StarData[] starData = new StarData[5000];
 	private static StarData[] pointStarData = new StarData[5000];
@@ -62,10 +58,10 @@ public class StarMaker {
 		for(int i=0; i<currentStarsNumber; i++){
 
 			starData[i].z = n + (f - n) * (float)Math.random();
-			float angleX = viewAngleX * (float)Math.random() - viewAngleX/2;
-			float angleY = viewAngleY * (float)Math.random() - viewAngleY/2;
-			starData[i].x = starData[i].z * (float)Math.tan(angleX * radian);
-			starData[i].y = starData[i].z * (float)Math.tan(angleY * radian);
+			float angleX = drawer.fovx * ((float)Math.random() - 0.5f);
+			float angleY = drawer.fovy * ((float)Math.random() - 0.5f);
+			starData[i].x = starData[i].z * (float)Math.tan(angleX * drawer.radian);
+			starData[i].y = starData[i].z * (float)Math.tan(angleY * drawer.radian);
 
 			starData[i].a = 1.0f;
 			starData[i].r = (float)Math.random() * 0.2f;
@@ -80,10 +76,10 @@ public class StarMaker {
 
 		for(int i=0; i<backGroundPointStars; i++){
 
-			float angleX = viewAngleX * (float)Math.random() - viewAngleX/2;
-			float angleY = viewAngleY * (float)Math.random() - viewAngleY/2;
-			pointStarData[i].x = -farthestDistance  * (float)Math.tan(angleX * radian);
-			pointStarData[i].y = -farthestDistance  * (float)Math.tan(angleY * radian);
+			float angleX = drawer.fovx * ((float)Math.random() - 0.5f);
+			float angleY = drawer.fovy * ((float)Math.random() - 0.5f);
+			pointStarData[i].x = -farthestDistance  * (float)Math.tan(angleX * drawer.radian);
+			pointStarData[i].y = -farthestDistance  * (float)Math.tan(angleY * drawer.radian);
 
 			pointStarData[i].r = (float)Math.random() * 0.2f + 0.8f;
 			pointStarData[i].g = (float)Math.random() * 0.2f + 0.8f;
@@ -100,10 +96,10 @@ public class StarMaker {
 		for(int i=0; i<currentNebulaeNumber; i++){
 
 			nebulaData[i].z = n + (f - n) * (float)Math.random();
-			float angleX = viewAngleX * (float)Math.random() - viewAngleX/2;
-			float angleY = viewAngleY * (float)Math.random() - viewAngleY/2;
-			nebulaData[i].x = nebulaData[i].z * (float)Math.tan(angleX * radian);
-			nebulaData[i].y = nebulaData[i].z * (float)Math.tan(angleY * radian);
+			float angleX = drawer.fovx * ((float)Math.random() - 0.5f);
+			float angleY = drawer.fovy * ((float)Math.random() - 0.5f);
+			nebulaData[i].x = nebulaData[i].z * (float)Math.tan(angleX * drawer.radian);
+			nebulaData[i].y = nebulaData[i].z * (float)Math.tan(angleY * drawer.radian);
 			nebulaData[i].rot = 360 * (float)Math.random();
 			nebulaData[i].texIndex = (int)(32 * (float)Math.random());
 		}

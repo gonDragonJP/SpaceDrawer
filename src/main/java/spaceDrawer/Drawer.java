@@ -11,15 +11,28 @@ import myJOGL_v2.MyGLUtil;
 import myJOGL_v2.MyPointF;
 
 public class Drawer {
+	
+	public static final float radian = 3.141592653589f/180;
 
 	private GLU glu = new GLU();
 	private StarMaker starMaker;
 	
+	public int screenX, screenY;
+	public float fovx, fovy;
+	
+	public ArrayList<MyGLTexSheet> texSheets = new ArrayList<>();
+	
 	public void init(GL2 gl2, int screenX, int screenY, float fovy) {
 		
-		MyGLUtil.setGL(gl2);
+		this.screenX = screenX;
+		this.screenY = screenY;
+		this.fovy = fovy;
+		
+		float aspectratio = (float)screenX / screenY;
+		this.fovx = getFovx(aspectratio);
 		
 		starMaker = new StarMaker(this);
+		loadTexture(gl2);
 		
 		//setupStandard3DProcess(gl2);
 		
@@ -28,15 +41,19 @@ public class Drawer {
 		gl2.glMatrixMode(GL2.GL_PROJECTION);
 		gl2.glLoadIdentity();
 		
-		double aspectratio = (double)screenX / screenY;
 		glu.gluPerspective(fovy, aspectratio, 0.1f, 1000);
 		
 		My3DVectorF cameraPoint = new My3DVectorF(0,0,0);
 		My3DVectorF lookPoint = new My3DVectorF(0,0,-1);
 		
 		setView(gl2, cameraPoint, lookPoint);
+	}
+	
+	private float getFovx(float aspectratio){
 		
-		loadTexture(gl2);
+		double tanHalfFovx = aspectratio * Math.tan(fovy/2*radian);
+		
+		return (float)Math.atan(tanHalfFovx) *2 / radian;
 	}
 	
 	private enum TextureFile{
@@ -57,8 +74,6 @@ public class Drawer {
 			fileName = fn;
 		}
 	}
-	
-	public ArrayList<MyGLTexSheet> texSheets = new ArrayList<>();
 	
 	public void loadTexture(GL2 gl){
 		
