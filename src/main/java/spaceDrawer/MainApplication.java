@@ -42,10 +42,7 @@ public class MainApplication extends Application{
 			public void render(GL gl) {
 				
 				GL2 gl2 = gl.getGL2();
-				gl2.glClear(GL2.GL_COLOR_BUFFER_BIT);
-		        gl2.glClearColor(0f, 0f, 0f, 0f);
-		        
-		        
+				
 				drawer.draw(gl2);
 			}
 			

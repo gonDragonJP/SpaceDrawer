@@ -29,7 +29,7 @@ public class Drawer {
 		gl2.glLoadIdentity();
 		
 		double aspectratio = (double)screenX / screenY;
-		glu.gluPerspective(fovy, aspectratio, 0.1, 1000);
+		glu.gluPerspective(fovy, aspectratio, 0.1f, 1000);
 		
 		My3DVectorF cameraPoint = new My3DVectorF(0,0,0);
 		My3DVectorF lookPoint = new My3DVectorF(0,0,-1);
@@ -76,19 +76,19 @@ public class Drawer {
 	
 	public void draw(GL2 gl2) {
 		
+		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT);
+        gl2.glClearColor(0f, 0f, 0f, 0f);
+        
+        gl2.glColor3f(1f, 1f, 1f);
 		
 		MyPointF start = new MyPointF(0,0);
 		MyPointF end = new MyPointF(100,100);
-		gl2.glColor3f(1f, 1f, 1f);
-		
+		MyGLUtil.drawLine(start, end);
 		
 		rotateAndTranslate(gl2,0,0,0,0,0,-10);
 		Icosahedron.draw(gl2, 1);
 		
 		starMaker.drawPointStars(gl2);
-		MyGLUtil.drawLine(start, end);
-		
-		
 		
 	}
 	
