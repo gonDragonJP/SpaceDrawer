@@ -58,12 +58,12 @@ public class Drawer {
 	
 	private enum TextureFile{
 		
-		dosei(0,"dosei.bmp"),
-		kaiousei(1,"kaiousei.bmp"),
-		moon(2,"moon.bmp"),
-		suisei(3,"suisei.bmp"),
-		nebula1(4,"nebula1.bmp"),
-		nebula2(5,"nebula2.bmp");
+		dosei(0,"dosei.png"),
+		kaiousei(1,"kaiousei.png"),
+		moon(2,"moon.png"),
+		suisei(3,"suisei.png"),
+		nebula1(4,"nebula1.png"),
+		nebula2(5,"nebula2.png");
 		
 		public int resID;
 		public String fileName;
@@ -85,7 +85,8 @@ public class Drawer {
 		for(TextureFile e: TextureFile.values()) {
 			
 			MyGLTexSheet newSheet = new MyGLTexSheet(e.resID, 1,1);
-			newSheet.setTexture(dir + e.fileName);
+			newSheet.setTexture(e.fileName);
+			texSheets.add(newSheet);
 		}
 	}
 	
@@ -104,6 +105,7 @@ public class Drawer {
 		Icosahedron.draw(gl2, 1);
 		
 		starMaker.drawPointStars(gl2);
+		starMaker.drawStars(gl2);
 		
 	}
 	

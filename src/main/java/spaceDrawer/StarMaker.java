@@ -7,14 +7,16 @@ public class StarMaker {
 	
 	float farthestDistance = 1000;
 	
-	int currentStarsNumber   ;     
-	float distancePercentageNearest  =20;
-	float distancePercentageFarthest =95;
-	float distanceTextureEnabled    =500 ;
+	int currentStarsNumber = 20;     
+	float distancePercentageNearest  =1f;
+	float distancePercentageFarthest =3;
+	float distanceTextureEnabled    =0 ;
+	
+	int backGroundPointStars = 3000;
+	
 	int currentNebulaeNumber      =50 ;
 	float distanceNebulaNearest =500;
-	int backGroundPointStars =3000;
-
+	
 	private static StarData[] starData = new StarData[5000];
 	private static StarData[] pointStarData = new StarData[5000];
 	private static StarData[] nebulaData = new StarData[5000];
@@ -121,9 +123,11 @@ public class StarMaker {
 			gl2.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, arg);
 
 			int texIndex = starData[i].texIndex;
-			int texGLID = drawer.texSheets.get(texIndex).texture.getTextureObject();
-			if(texIndex !=-1)
+			
+			if(texIndex !=-1){
+				int texGLID = drawer.texSheets.get(texIndex).texture.getTextureObject();
 				gl2.glBindTexture(GL2.GL_TEXTURE_2D, texGLID);
+			}
 			else
 				gl2.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 

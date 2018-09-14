@@ -18,7 +18,7 @@ public class MainApplication extends Application{
 	
 	private final int screenX = 320;
 	private final int screenY = 480;
-	private final int fovy = 90;	//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
+	private final int fovy = 45;	//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
 	private MyGLWinWrap winWrap;
 	private Drawer drawer = new Drawer();
 

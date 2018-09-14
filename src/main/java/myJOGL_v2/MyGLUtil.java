@@ -167,7 +167,7 @@ public class MyGLUtil {
 		
 		Texture texture = null;
 		
-		int beginIndex = fileName.length() -2;
+		int beginIndex = fileName.length() -3;
 		int endIndex = fileName.length();
 		String suffix = fileName.substring(beginIndex, endIndex);
 		String format;
@@ -175,7 +175,7 @@ public class MyGLUtil {
 		switch(suffix) {
 		
 			case "png": format = TextureIO.PNG; break;
-			case "bmp": format = TextureIO.JPG; break;
+			case "jpg": format = TextureIO.JPG; break;
 			default:
 				return null;
 		}
