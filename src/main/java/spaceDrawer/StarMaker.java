@@ -3,30 +3,33 @@ import java.nio.FloatBuffer;
 
 import com.jogamp.opengl.GL2;
 
+import spaceDrawer.Drawer.TextureFile;
+
 public class StarMaker {
 	
 	float farthestDistance = 1000;
 	
-	int currentStarsNumber = 20;     
-	float distancePercentageNearest  =1f;
-	float distancePercentageFarthest =3;
-	float distanceTextureEnabled    =0 ;
+	int currentStarsNumber = 100;     
+	float distancePercentageNearest  = 20;
+	float distancePercentageFarthest = 70;
+	float distancePercentegeTextureEnabled    = 30 ;
 	
-	int backGroundPointStars = 500;
+	int backGroundPointStars = 2000;
 	
-	int currentNebulaeNumber      =50 ;
-	float distanceNebulaNearest =500;
+	int currentNebulaeNumber      =5 ;
+	float distanceNebulaNearest = 80;
 	
-	private static StarData[] starData = new StarData[3000];
-	private static StarData[] pointStarData = new StarData[3000];
-	private static StarData[] nebulaData = new StarData[3000];
+	public static final int maxStarData = 500; 
+	public static final int maxPointStarData = 5000;
+	public static final int maxNebulaData = 100;
+	private static StarData[] starData = new StarData[maxStarData];
+	private static StarData[] pointStarData = new StarData[maxPointStarData];
+	private static StarData[] nebulaData = new StarData[maxNebulaData];
 	
 	static {
-		for(int i=0; i<3000; i++) {
-			starData[i] = new StarData();
-			pointStarData[i] = new StarData();
-			nebulaData[i] = new StarData();
-		}
+		for(int i=0; i<maxStarData; i++) starData[i] = new StarData();
+		for(int i=0; i<maxPointStarData; i++) pointStarData[i] = new StarData();
+		for(int i=0; i<maxNebulaData; i++) nebulaData[i] = new StarData();
 	}
 	
 	private static class StarData{
@@ -36,12 +39,10 @@ public class StarMaker {
 	}
 	
 	private Drawer drawer;
-	private int maxPlanetTexIndex;
 	
-	public StarMaker(Drawer drawer, int maxPlanetTexIndex){
+	public StarMaker(Drawer drawer){
 		
 		this.drawer = drawer;
-		this.maxPlanetTexIndex = maxPlanetTexIndex;
 		
 		makeAllData();
 	}
@@ -57,7 +58,7 @@ public class StarMaker {
 
 		float n = distancePercentageNearest  * -farthestDistance / 100;
 		float f = distancePercentageFarthest * -farthestDistance / 100;
-		float textureEnabled = distanceTextureEnabled * -farthestDistance /100;
+		float textureEnabled = distancePercentegeTextureEnabled * -farthestDistance /100;
 
 		for(int i=0; i<currentStarsNumber; i++){
 
@@ -68,11 +69,11 @@ public class StarMaker {
 			starData[i].y = starData[i].z * (float)Math.tan(angleY * drawer.radian);
 
 			starData[i].a = 1.0f;
-			starData[i].r = (float)Math.random() * 0.2f;
-			starData[i].g = (float)Math.random() * 0.5f;
-			starData[i].b = (float)Math.random() * 0.5f;
-			starData[i].texIndex = (starData[i].z * -1 > textureEnabled) ? 
-				(int)((float)Math.random() * (maxPlanetTexIndex+1)): -1;
+			starData[i].r = (float)Math.random() * 0.7f +0.3f;
+			starData[i].g = (float)Math.random() * 0.7f +0.3f;
+			starData[i].b = (float)Math.random() * 0.7f +0.3f;
+			starData[i].texIndex = (starData[i].z  > textureEnabled) ? 
+				(int)(Math.random() * (TextureFile.maxPlanetIndex+1)): -1;
 		}
 	}
 
@@ -96,6 +97,8 @@ public class StarMaker {
 
 		float n = distanceNebulaNearest * -farthestDistance / 100;
 		float f = -farthestDistance;
+		
+		int nebulaTexNumber = TextureFile.maxNebulaIndex - TextureFile.firstNebulaIndex +1;
 
 		for(int i=0; i<currentNebulaeNumber; i++){
 
@@ -105,7 +108,8 @@ public class StarMaker {
 			nebulaData[i].x = nebulaData[i].z * (float)Math.tan(angleX * drawer.radian);
 			nebulaData[i].y = nebulaData[i].z * (float)Math.tan(angleY * drawer.radian);
 			nebulaData[i].rot = 360 * (float)Math.random();
-			nebulaData[i].texIndex = (int)(32 * (float)Math.random());
+			nebulaData[i].texIndex = 
+					TextureFile.firstNebulaIndex + (int)(nebulaTexNumber * Math.random());
 		}
 	}
 
@@ -160,9 +164,8 @@ public class StarMaker {
 		gl2.glEnable(GL2.GL_BLEND);
 		gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE_MINUS_SRC_ALPHA);
 
-		gl2.glDisable(GL2.GL_DEPTH_TEST);
 		gl2.glDisable(GL2.GL_LIGHTING);
-		gl2.glDisable(GL2.GL_TEXTURE_2D);
+		gl2.glDisable(GL2.GL_TEXTURE_2D);	//ライティングとテクスチャを無効にしないと点はうまく表示できません
 
 		for(int i=0; i<backGroundPointStars; i++){
 
@@ -208,7 +211,7 @@ public class StarMaker {
 			gl2.glBindTexture(GL2.GL_TEXTURE_2D, texGLID);
 
 			gl2.glPushMatrix();
-			drawer.rotateAndTranslate(gl2,0,0,
+			drawer.rotateAndTranslate(gl2,(float)Math.random()*80-40,(float)Math.random()*80-40,
 				nebulaData[i].rot,
 				nebulaData[i].x,
 				nebulaData[i].y,
