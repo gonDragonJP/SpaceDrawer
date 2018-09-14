@@ -31,10 +31,10 @@ public class Drawer {
 		float aspectratio = (float)screenX / screenY;
 		this.fovx = getFovx(aspectratio);
 		
-		starMaker = new StarMaker(this);
+		starMaker = new StarMaker(this, TextureFile.getMaxPlanetIndex());
 		loadTexture(gl2);
 		
-		//setupStandard3DProcess(gl2);
+		setupStandard3DProcess(gl2);
 		
 		gl2.glViewport(0, 0, screenX, screenY);
 		
@@ -65,6 +65,8 @@ public class Drawer {
 		nebula1(4,"nebula1.png"),
 		nebula2(5,"nebula2.png");
 		
+		public static int maxPlanetIndex = 3;
+		
 		public int resID;
 		public String fileName;
 	
@@ -73,6 +75,11 @@ public class Drawer {
 			resID = id;
 			fileName = fn;
 		}
+		
+		public static int getMaxPlanetIndex(){
+			
+			return maxPlanetIndex;
+		}
 	}
 	
 	public void loadTexture(GL2 gl){
@@ -80,19 +87,19 @@ public class Drawer {
 		MyGLUtil.enableDefaultBlend();
 		MyGLUtil.changeTexColor(null);
 		
-		String dir ="texture\\";
+		String dir =".\\texture\\";
 		
 		for(TextureFile e: TextureFile.values()) {
 			
 			MyGLTexSheet newSheet = new MyGLTexSheet(e.resID, 1,1);
-			newSheet.setTexture(e.fileName);
+			newSheet.setTexture(dir + e.fileName);
 			texSheets.add(newSheet);
 		}
 	}
 	
 	public void draw(GL2 gl2) {
 		
-		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT);
+		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT|GL2.GL_DEPTH_BUFFER_BIT);
         gl2.glClearColor(0f, 0f, 0f, 0f);
         
         gl2.glColor3f(1f, 1f, 1f);

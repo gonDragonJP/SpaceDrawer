@@ -12,17 +12,17 @@ public class StarMaker {
 	float distancePercentageFarthest =3;
 	float distanceTextureEnabled    =0 ;
 	
-	int backGroundPointStars = 3000;
+	int backGroundPointStars = 500;
 	
 	int currentNebulaeNumber      =50 ;
 	float distanceNebulaNearest =500;
 	
-	private static StarData[] starData = new StarData[5000];
-	private static StarData[] pointStarData = new StarData[5000];
-	private static StarData[] nebulaData = new StarData[5000];
+	private static StarData[] starData = new StarData[3000];
+	private static StarData[] pointStarData = new StarData[3000];
+	private static StarData[] nebulaData = new StarData[3000];
 	
 	static {
-		for(int i=0; i<5000; i++) {
+		for(int i=0; i<3000; i++) {
 			starData[i] = new StarData();
 			pointStarData[i] = new StarData();
 			nebulaData[i] = new StarData();
@@ -36,10 +36,12 @@ public class StarMaker {
 	}
 	
 	private Drawer drawer;
+	private int maxPlanetTexIndex;
 	
-	public StarMaker(Drawer drawer){
+	public StarMaker(Drawer drawer, int maxPlanetTexIndex){
 		
 		this.drawer = drawer;
+		this.maxPlanetTexIndex = maxPlanetTexIndex;
 		
 		makeAllData();
 	}
@@ -69,8 +71,8 @@ public class StarMaker {
 			starData[i].r = (float)Math.random() * 0.2f;
 			starData[i].g = (float)Math.random() * 0.5f;
 			starData[i].b = (float)Math.random() * 0.5f;
-			starData[i].texIndex = (starData[i].z > textureEnabled) ? 
-				(int)((float)Math.random() * 7) % 4 : -1;
+			starData[i].texIndex = (starData[i].z * -1 > textureEnabled) ? 
+				(int)((float)Math.random() * (maxPlanetTexIndex+1)): -1;
 		}
 	}
 
@@ -158,6 +160,7 @@ public class StarMaker {
 		gl2.glEnable(GL2.GL_BLEND);
 		gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE_MINUS_SRC_ALPHA);
 
+		gl2.glDisable(GL2.GL_DEPTH_TEST);
 		gl2.glDisable(GL2.GL_LIGHTING);
 		gl2.glDisable(GL2.GL_TEXTURE_2D);
 
