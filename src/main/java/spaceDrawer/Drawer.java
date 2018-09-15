@@ -75,11 +75,14 @@ public class Drawer {
 		moon(2,"moon.png"),
 		suisei(3,"suisei.png"),
 		nebula1(4,"nebula3.png"),
-		nebula2(5,"nebula4.png");
+		nebula2(5,"nebula4.png"),
+		nebula3(6,"nebula10.png"),
+		nebula4(7,"nebula11.png"),
+		nebula5(8,"nebula12.png");
 		
 		public static int maxPlanetIndex = 3;
 		public static int firstNebulaIndex = 4;
-		public static int maxNebulaIndex = 5;
+		public static int maxNebulaIndex = 8;
 		
 		public int resID;
 		public String fileName;

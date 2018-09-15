@@ -17,8 +17,8 @@ public class StarMaker {
 	
 	int backGroundPointStars = 3000;
 	
-	int currentNebulaeNumber      =5 ;
-	float distanceNebulaNearest = 60;
+	int currentNebulaeNumber      =10 ;
+	float distanceNebulaNearest = 40;
 	
 	public static final int maxStarData = 500; 
 	public static final int maxPointStarData = 5000;
@@ -202,7 +202,7 @@ public class StarMaker {
 
 		gl2.glEnable(GL2.GL_BLEND);	
 		gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE_MINUS_SRC_ALPHA);
-		gl2.glDisable(GL2.GL_LIGHTING);
+		//gl2.glDisable(GL2.GL_LIGHTING);
 
 		for(int i=0; i<currentNebulaeNumber; i++){
 
