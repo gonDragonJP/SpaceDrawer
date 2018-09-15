@@ -29,18 +29,29 @@ public class MainApplication extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 		
-		SceneUtil.initStage(stage);
-		stage.show();
-		
-		SceneUtil.makeButton.setOnAction(event->updateSpace());
+		drawer = new Drawer();
 		dataContainer = new DataContainer();
+		
+		setupStage(stage);
+		setupGLWinWrap();
+	}
+	
+	private void setupStage(Stage stage){
+		
+		SceneUtil.initStage(stage);
+		
+		SceneUtil.makeButton.setOnAction(event->updateSpace());	
+		
 		dataContainer.screenX = screenX;
 		dataContainer.screenY = screenY;
 		dataContainer.fovy = fovy;
 		SceneUtil.setListValue(dataContainer);
 		SceneUtil.valueListView.setOnMouseClicked(event->onClickedList(event));
 		
-		drawer = new Drawer();
+		stage.show();
+	}
+	
+	private void setupGLWinWrap(){
 		
 		winWrap = new MyGLWinWrap(GLProfile.GL2ES1);
 		winWrap.setRenderer(new MyRenderable(){
@@ -68,7 +79,6 @@ public class MainApplication extends Application{
 		winWrap.getWindow().setVisible(true);
 	}
 
-	
 	public void invalidate(){
 		
 		winWrap.getWindow().display();
