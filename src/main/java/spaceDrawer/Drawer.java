@@ -14,13 +14,19 @@ public class Drawer {
 	
 	public static final float radian = 3.141592653589f/180;
 
-	private GLU glu = new GLU();
+	private GLU glu;
 	private StarMaker starMaker;
 	
 	public int screenX, screenY;
 	public float fovx, fovy;
 	
-	public ArrayList<MyGLTexSheet> texSheets = new ArrayList<>();
+	public ArrayList<MyGLTexSheet> texSheets;
+	
+	public Drawer(){
+		
+		glu = new GLU();
+		texSheets = new ArrayList<>();
+	}
 	
 	public void init(GL2 gl2, int screenX, int screenY, float fovy) {
 		
@@ -43,12 +49,16 @@ public class Drawer {
 		
 		glu.gluPerspective(fovy, aspectratio, 0.1f, 1000);
 		
+		gl2.glMatrixMode(GL2.GL_MODELVIEW);
+		gl2.glLoadIdentity();
+		
+		setLighting(gl2); 	//ライティングはワールド座標系で行われるので視野変換の設定前に設定します
+							//ライティング設定はモデル変換の影響を受けますが影響を与えはしません
+		
 		My3DVectorF cameraPoint = new My3DVectorF(0,0,0);
 		My3DVectorF lookPoint = new My3DVectorF(0,0,-1);
 		
 		setView(gl2, cameraPoint, lookPoint);
-		
-		setLighting(gl2);
 	}
 	
 	private float getFovx(float aspectratio){
@@ -101,7 +111,7 @@ public class Drawer {
 		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT|GL2.GL_DEPTH_BUFFER_BIT);
         gl2.glClearColor(0f, 0f, 0f, 0f);
        
-		//testDraw(gl2);	
+		testDraw(gl2);	
 		starMaker.drawPointStars(gl2);
 		starMaker.drawStars(gl2);	
 		starMaker.drawNebulae(gl2);

@@ -18,9 +18,9 @@ public class MainApplication extends Application{
 	
 	private final int screenX = 320;
 	private final int screenY = 480;
-	private final int fovy = 45;	//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
+	private final int fovy = 90;	//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
 	private MyGLWinWrap winWrap;
-	private Drawer drawer = new Drawer();
+	private Drawer drawer;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -28,9 +28,11 @@ public class MainApplication extends Application{
 		SceneUtil.initStage(stage);
 		stage.show();
 		
+		drawer = new Drawer();
+		
 		winWrap = new MyGLWinWrap(GLProfile.GL2ES1);
 		winWrap.setRenderer(new MyRenderable(){
-
+			
 			@Override
 			public void init(GL gl) {
 				
