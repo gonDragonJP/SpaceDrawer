@@ -111,8 +111,8 @@ public class Drawer {
 		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT|GL2.GL_DEPTH_BUFFER_BIT);
         gl2.glClearColor(0f, 0f, 0f, 0f);
        
-		testDraw(gl2);	
 		starMaker.drawPointStars(gl2);
+		testDraw(gl2);	
 		starMaker.drawStars(gl2);	
 		starMaker.drawNebulae(gl2);
 		
@@ -219,20 +219,20 @@ public class Drawer {
 	public void setLighting(GL2 gl2) {
 		
 		float[] ambient = {0.5f,0.5f,0.5f,1};
-		float[] diffuse = {0.8f,0.8f,0.8f,1};
+		float[] diffuse = {0.8f,0.8f,0.8f,0};
 		float[] specular = {1f,1f,1f,1};
-		float[] position = {0,0,0,1};
+		float[] position = {10,0,0,1};
 		
 		FloatBuffer ambientLight0,diffuseLight0,specularLight0,positionLight0;
 		
-		ambientLight0 = FloatBuffer.wrap(ambient);
+		//ambientLight0 = FloatBuffer.wrap(ambient);
 		diffuseLight0 = FloatBuffer.wrap(diffuse);
-		specularLight0 = FloatBuffer.wrap(specular);
+		//specularLight0 = FloatBuffer.wrap(specular);
 		positionLight0 = FloatBuffer.wrap(position);
 		
-		gl2.glLightfv(GL2.GL_LIGHT0,GL2.GL_AMBIENT,ambientLight0);
+		//gl2.glLightfv(GL2.GL_LIGHT0,GL2.GL_AMBIENT,ambientLight0);
 		gl2.glLightfv(GL2.GL_LIGHT0,GL2.GL_DIFFUSE,diffuseLight0);
-		gl2.glLightfv(GL2.GL_LIGHT0,GL2.GL_SPECULAR,specularLight0);
+		//gl2.glLightfv(GL2.GL_LIGHT0,GL2.GL_SPECULAR,specularLight0);
 		gl2.glLightfv(GL2.GL_LIGHT0,GL2.GL_POSITION,positionLight0);
 	
 		gl2.glEnable(GL2.GL_LIGHTING);

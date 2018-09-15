@@ -1,6 +1,7 @@
 package spaceDrawer;
 import java.nio.FloatBuffer;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
 import spaceDrawer.Drawer.TextureFile;
@@ -14,10 +15,10 @@ public class StarMaker {
 	float distancePercentageFarthest = 70;
 	float distancePercentegeTextureEnabled    = 30 ;
 	
-	int backGroundPointStars = 2000;
+	int backGroundPointStars = 3000;
 	
 	int currentNebulaeNumber      =5 ;
-	float distanceNebulaNearest = 80;
+	float distanceNebulaNearest = 60;
 	
 	public static final int maxStarData = 500; 
 	public static final int maxPointStarData = 5000;
@@ -166,7 +167,8 @@ public class StarMaker {
 
 		gl2.glDisable(GL2.GL_LIGHTING);
 		gl2.glDisable(GL2.GL_TEXTURE_2D);	//ライティングとテクスチャを無効にしないと点はうまく表示できません
-
+		gl2.glDisable(GL.GL_DEPTH_TEST);	//デプスも無効にしないと表示されないが理由が解らない…
+		
 		for(int i=0; i<backGroundPointStars; i++){
 
 			gl2.glColor4f(	pointStarData[i].r,
@@ -200,7 +202,6 @@ public class StarMaker {
 
 		gl2.glEnable(GL2.GL_BLEND);	
 		gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE_MINUS_SRC_ALPHA);
-		gl2.glDepthMask(false);
 		gl2.glDisable(GL2.GL_LIGHTING);
 
 		for(int i=0; i<currentNebulaeNumber; i++){
