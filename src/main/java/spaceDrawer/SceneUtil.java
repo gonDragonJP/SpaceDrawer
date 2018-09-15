@@ -16,8 +16,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import spaceDrawer.MenuUtil.BackGroundColor;
+import spaceDrawer.MenuUtil.MenuCallback;
+import spaceDrawer.MenuUtil.OnOrOff;
 
-public class SceneUtil {
+public class SceneUtil{
+	
+	public static MenuCallback menuCallback;
 	
 	public static void initStage(Stage stage){
 		
@@ -32,11 +37,22 @@ public class SceneUtil {
 		box.setSpacing(30);
 		box.getChildren().addAll(genConsoleBox(), genTablePane());
 		
-		//root.getChildren().addAll(MenuUtil_MainApp.generateMenu(mainApp), box);
-		root.getChildren().addAll(box);
+		root.getChildren().addAll(MenuUtil.generateMenu(menuCallback), box);
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
 
+	}
+	
+	private void setMenuCallback() {
+		
+		menuCallback = new MenuCallback() {
+
+			@Override
+			public void saveImageFile() {
+				// TODO Auto-generated method stub
+				
+			}
+		};
 	}
 	
 	public static TextField textPictureName = new TextField("No_title.png");
@@ -153,4 +169,5 @@ public class SceneUtil {
 		}
 		return "null";
 	}
+
 }
