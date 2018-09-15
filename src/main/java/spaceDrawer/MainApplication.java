@@ -4,6 +4,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLProfile;
 
 import javafx.application.Application;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import myJOGL_v2.MyGLUtil;
 import myJOGL_v2.MyGLWinWrap;
@@ -35,6 +36,7 @@ public class MainApplication extends Application{
 		dataContainer.screenY = screenY;
 		dataContainer.fovy = fovy;
 		SceneUtil.setListValue(dataContainer);
+		SceneUtil.valueListView.setOnMouseClicked(event->onClickedList(event));
 		
 		drawer = new Drawer();
 		
@@ -74,5 +76,9 @@ public class MainApplication extends Application{
 		
 		drawer.updateSpace();
 		invalidate();
+	}
+	
+	private void onClickedList(MouseEvent event) {
+		
 	}
 }

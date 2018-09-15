@@ -110,6 +110,8 @@ public class SceneUtil {
 		valueListView.setPrefWidth(200);
 		valueListView.setPrefHeight(300);
 		
+		valueListView.setEditable(true);
+		
 		String nameColumn[] = new String[DataColumn.values().length];
 		
 		for(DataColumn e: DataColumn.values()){
