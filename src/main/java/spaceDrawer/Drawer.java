@@ -28,6 +28,11 @@ public class Drawer {
 		texSheets = new ArrayList<>();
 	}
 	
+	public void updateSpace() {
+		
+		starMaker.makeAllData();
+	}
+	
 	public void init(GL2 gl2, int screenX, int screenY, float fovy) {
 		
 		this.screenX = screenX;

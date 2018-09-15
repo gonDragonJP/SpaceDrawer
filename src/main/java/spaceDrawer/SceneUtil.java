@@ -6,9 +6,12 @@ import java.lang.reflect.Field;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -27,108 +30,111 @@ public class SceneUtil {
 		VBox box = new VBox();
 		box.setPadding(new Insets(30));
 		box.setSpacing(30);
-		//box.getChildren().addAll(genPicDataBox(), genTablePane());
-		
+		box.getChildren().addAll(genConsoleBox(), genTablePane());
 		
 		//root.getChildren().addAll(MenuUtil_MainApp.generateMenu(mainApp), box);
+		root.getChildren().addAll(box);
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
 
 	}
-	/*
-	private static Pane genPicDataBox(){
+	
+	public static TextField textPictureName = new TextField("No_title.png");
+	public static Button makeButton = new Button("Make Space");
+	
+	private static Pane genConsoleBox(){
 		
-		Label label0= new Label("TexID");
-		Label label1= new Label("PictureName (Size)");
-		Label label2= new Label("GridSizeX");
-		Label label3= new Label("GridSizeY");
+		Label label1= new Label("PictureName");
 		
-		mainApp.textTextureID.setPrefWidth(50);
-		mainApp.textPictureName.setMaxWidth(250);
-		mainApp.textPictureName.setMinWidth(250);
-		mainApp.textPictureName.setEditable(false);
-		mainApp.textGridSizeX.setMaxWidth(50);
-		mainApp.textGridSizeY.setMaxWidth(50);
-		mainApp.storeButton.setPrefWidth(100);
+		textPictureName.setMaxWidth(250);
+		textPictureName.setMinWidth(250);
+		textPictureName.setEditable(false);
+		makeButton.setPrefWidth(100);
 		
 		VBox box = new VBox();
 		box.setSpacing(10);
 		
 		HBox box2 = new HBox();
 		box2.setSpacing(30);
-		box2.getChildren().addAll(label0, label1, label2, label3);
+		box2.getChildren().addAll(label1);
 		
 		HBox box3 = new HBox();
 		box3.setSpacing(10);
 		box3.getChildren().addAll(
-				mainApp.textTextureID,
-				mainApp.textPictureName, 
-				mainApp.textGridSizeX, 
-				mainApp.textGridSizeY,
-				mainApp.storeButton
+				textPictureName, 
+				makeButton
 				);
-		
-		mainApp.textTextureID.setOnAction(event->mainApp.setTexID());
-		mainApp.textGridSizeX.setOnAction(event->mainApp.setGridSize());
-		mainApp.textGridSizeY.setOnAction(event->mainApp.setGridSize());
-		
-		mainApp.storeButton.setOnAction(event->mainApp.storeToDB());
 	
 		box.getChildren().addAll(box2, box3);
 		
 		return box;
 	}
 	
-	public enum TexDataColumn{
+	public enum DataColumn{
 		
-		TexID(40,"textureID"),
-		Sheet_PictureName(200,"pictureName"),
-		GridX(40,"gridSizeX"),
-		GridY(40,"gridSizeY");
+		Screen_X("screenX","pix"),
+		Screen_Y("screenY","pix"),
+		Fovy("fovy","degree"),
+		MaxDistance("farthestDistance","world_scale"),
 		
-		public int width;
+		MiddleStarNumber("currentStarsNumber",""),     
+		NearestDistance_MS("distancePercentageNearest","%"),
+		FarthestDistance_MS("distancePercentageFarthest","%"),
+		TexEnabledDistance("distancePercentegeTextureEnabled","%"),
+		
+		SmallStarNumber("backGroundPointStars",""),
+		
+		NebulaNumber("currentNebulaeNumber",""),
+		NearestDistance_NB("distanceNebulaNearest","%");
+		
 		public String fieldName;
+		public String unit;
 		
-		TexDataColumn(int width, String fieldName){
-			
-			this.width = width;
+		DataColumn(String fieldName, String unit){
 			this.fieldName = fieldName;
+			this.unit = unit;
 		}
 	}
 	
+	public static ListView<String> valueListView = new ListView<>();
+	
 	private static Pane genTablePane(){
 		
-		TableModule  tableModule = mainApp.getTableModule();
-		TableView<TextureData> tableView = tableModule.getView();
-		Pane pane = new Pane();
+		DataContainer dataContainer = new DataContainer();
+		ListView<String> nameListView = new ListView<>();
 		
-		tableView.setPrefWidth(550);
-		tableView.setPrefHeight(300);
+		HBox pane = new HBox();
 		
-		TableColumn<TextureData, String>[] columns 
-			= new TableColumn[TexDataColumn.values().length];
+		nameListView.setPrefWidth(200);
+		nameListView.setPrefHeight(300);
+		valueListView.setPrefWidth(200);
+		valueListView.setPrefHeight(300);
 		
-		for(TexDataColumn e: TexDataColumn.values()){
+		String nameColumn[] = new String[DataColumn.values().length];
+		
+		for(DataColumn e: DataColumn.values()){
 			
-			columns[e.ordinal()] = new TableColumn<TextureData, String>(e.toString());
-			columns[e.ordinal()].setPrefWidth(e.width);
-		
-			columns[e.ordinal()].setCellValueFactory(
-					param -> {
-						String colString = 
-								getReflectedFieldAsString(param.getValue(),e.fieldName);
-						return new SimpleStringProperty(colString);
-					}
-			);
+			nameColumn[e.ordinal()] = e.toString();	
 		}
 		
-		tableView.getColumns().addAll(columns);
-		tableView.setOnMouseClicked(event -> tableModule.onMouseClicked(event));
-		
-		pane.getChildren().add(tableView);
+		nameListView.getItems().addAll(nameColumn);
+	
+		pane.getChildren().addAll(nameListView, valueListView);
 		
 		return pane;
-	}*/
+	}
+	
+	public static void setListValue(DataContainer dataContainer) {
+		
+		String valueColumn[] = new String[DataColumn.values().length];
+		
+		for(DataColumn e: DataColumn.values()){
+		
+			valueColumn[e.ordinal()] = getReflectedFieldAsString(dataContainer,e.fieldName) +" "+ e.unit;
+					
+		}
+		valueListView.getItems().addAll(valueColumn);
+	}
 	
 	private static String getReflectedFieldAsString(Object object, String fieldName){
 		

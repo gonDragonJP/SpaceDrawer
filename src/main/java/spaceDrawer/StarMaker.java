@@ -48,7 +48,7 @@ public class StarMaker {
 		makeAllData();
 	}
 	
-	private void makeAllData(){
+	public void makeAllData(){
 
 		makeStarsData();
 		makePointStarsData();

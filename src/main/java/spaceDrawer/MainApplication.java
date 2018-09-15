@@ -21,12 +21,20 @@ public class MainApplication extends Application{
 	private final int fovy = 90;	//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
 	private MyGLWinWrap winWrap;
 	private Drawer drawer;
+	private DataContainer dataContainer;
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		
 		SceneUtil.initStage(stage);
 		stage.show();
+		
+		SceneUtil.makeButton.setOnAction(event->updateSpace());
+		dataContainer = new DataContainer();
+		dataContainer.screenX = screenX;
+		dataContainer.screenY = screenY;
+		dataContainer.fovy = fovy;
+		SceneUtil.setListValue(dataContainer);
 		
 		drawer = new Drawer();
 		
@@ -60,5 +68,11 @@ public class MainApplication extends Application{
 	public void invalidate(){
 		
 		winWrap.getWindow().display();
+	}
+	
+	private void updateSpace() {
+		
+		drawer.updateSpace();
+		invalidate();
 	}
 }
