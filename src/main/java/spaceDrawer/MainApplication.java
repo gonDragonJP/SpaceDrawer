@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import myJOGL_v2.MyGLUtil;
 import myJOGL_v2.MyGLWinWrap;
 import myJOGL_v2.MyGLWinWrap.MyRenderable;
+import spaceDrawer.MenuUtil.MenuCallback;
 import spaceDrawer.SceneUtil.FieldNameColumn;
 
 public class MainApplication extends Application{
@@ -24,6 +25,7 @@ public class MainApplication extends Application{
 	private MyGLWinWrap winWrap;
 	private Drawer drawer;
 	private DataContainer dataContainer;
+	private boolean screenSaveSwitch = false;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -44,6 +46,8 @@ public class MainApplication extends Application{
 		SceneUtil.updateListValue(dataContainer);
 		SceneUtil.valueListView.setOnEditCommit(event -> onEditCommitedList(event));
 		
+		SceneUtil.setMenuCallback(() -> screenSaveSwitch = true);
+
 		stage.show();
 	}
 	
@@ -67,6 +71,8 @@ public class MainApplication extends Application{
 				GL2 gl2 = gl.getGL2();
 				
 				drawer.draw(gl2);
+				
+				if(screenSaveSwitch) onScreenSave(gl2);
 			}
 			
 		});
@@ -96,5 +102,10 @@ public class MainApplication extends Application{
 		SceneUtil.setTextDataToReflectedField(dataContainer, data.fieldName, newText);
 		
 		SceneUtil.updateListValue(dataContainer);
+	}
+	
+	private void onScreenSave(GL2 gl2) {
+		
+		screenSaveSwitch = false;
 	}
 }

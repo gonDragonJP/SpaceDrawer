@@ -23,8 +23,6 @@ import spaceDrawer.MenuUtil.OnOrOff;
 
 public class SceneUtil{
 	
-	public static MenuCallback menuCallback;
-	
 	public static void initStage(Stage stage){
 		
 		stage.setTitle("SpaceDrawer ver1.0");
@@ -38,22 +36,15 @@ public class SceneUtil{
 		box.setSpacing(30);
 		box.getChildren().addAll(genConsoleBox(), genTablePane());
 		
-		root.getChildren().addAll(MenuUtil.generateMenu(menuCallback), box);
+		root.getChildren().addAll(MenuUtil.generateMenu(), box);
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
 
 	}
 	
-	private void setMenuCallback() {
-		
-		menuCallback = new MenuCallback() {
-
-			@Override
-			public void saveImageFile() {
-				// TODO Auto-generated method stub
-				
-			}
-		};
+	public static void setMenuCallback(MenuCallback callable) {
+	
+		MenuUtil.menuCallback = callable;
 	}
 	
 	public static TextField textPictureName = new TextField("No_title.png");

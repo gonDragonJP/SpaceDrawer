@@ -19,11 +19,10 @@ public class MenuUtil {
 		void saveImageFile();
 	}
 	
-	private static MenuCallback menuCallback;
+	public static MenuCallback menuCallback;
 
-	public static MenuBar generateMenu(MenuCallback callable){
-		
-		menuCallback = callable;
+	public static MenuBar generateMenu(){
+	
 		MenuBar menuBar = new MenuBar();
 		
 		String[] menuNames = {"File","Setting"};
