@@ -6,6 +6,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLProfile;
 
 import javafx.application.Application;
+import javafx.scene.control.ListView.EditEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import myJOGL_v2.MyGLUtil;
@@ -45,8 +46,8 @@ public class MainApplication extends Application{
 		dataContainer.screenX = screenX;
 		dataContainer.screenY = screenY;
 		dataContainer.fovy = fovy;
-		SceneUtil.setListValue(dataContainer);
-		SceneUtil.valueListView.setOnMouseClicked(event->onClickedList(event));
+		SceneUtil.updateListValue(dataContainer);
+		SceneUtil.valueListView.setOnEditCommit(event -> onEditCommitedList(event));
 		
 		stage.show();
 	}
@@ -90,7 +91,8 @@ public class MainApplication extends Application{
 		invalidate();
 	}
 	
-	private void onClickedList(MouseEvent event) {
+	private void onEditCommitedList(EditEvent event) {
 		
+		SceneUtil.updateListValue(dataContainer);
 	}
 }

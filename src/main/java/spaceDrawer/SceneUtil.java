@@ -12,6 +12,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -117,7 +118,7 @@ public class SceneUtil{
 	private static Pane genTablePane(){
 		
 		DataContainer dataContainer = new DataContainer();
-		ListView<String> nameListView = new ListView<>();
+		ListView<DataColumn> nameListView = new ListView<>();
 		
 		HBox pane = new HBox();
 		
@@ -127,12 +128,13 @@ public class SceneUtil{
 		valueListView.setPrefHeight(300);
 		
 		valueListView.setEditable(true);
+		valueListView.setCellFactory(TextFieldListCell.forListView());
 		
-		String nameColumn[] = new String[DataColumn.values().length];
+		DataColumn nameColumn[] = new DataColumn[DataColumn.values().length];
 		
 		for(DataColumn e: DataColumn.values()){
 			
-			nameColumn[e.ordinal()] = e.toString();	
+			nameColumn[e.ordinal()] = e;	
 		}
 		
 		nameListView.getItems().addAll(nameColumn);
@@ -142,7 +144,7 @@ public class SceneUtil{
 		return pane;
 	}
 	
-	public static void setListValue(DataContainer dataContainer) {
+	public static void updateListValue(DataContainer dataContainer) {
 		
 		String valueColumn[] = new String[DataColumn.values().length];
 		
@@ -151,6 +153,7 @@ public class SceneUtil{
 			valueColumn[e.ordinal()] = getReflectedFieldAsString(dataContainer,e.fieldName) +" "+ e.unit;
 					
 		}
+		valueListView.getItems().clear();
 		valueListView.getItems().addAll(valueColumn);
 	}
 	
