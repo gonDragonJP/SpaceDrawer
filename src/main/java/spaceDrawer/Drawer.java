@@ -88,7 +88,7 @@ public class Drawer {
 		MyGLUtil.enableDefaultBlend();
 		MyGLUtil.changeTexColor(null);
 		
-		String dir =".\\texture\\";
+		String dir = ".\\texture\\";
 		
 		for(TextureFile e: TextureFile.values()) {
 			

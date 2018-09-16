@@ -1,18 +1,25 @@
 
 
 package spaceDrawer;
+
+import java.nio.ByteBuffer;
+
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLProfile;
 
 import javafx.application.Application;
 import javafx.scene.control.ListView.EditEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.image.WritablePixelFormat;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import myJOGL_v2.MyGLUtil;
 import myJOGL_v2.MyGLWinWrap;
 import myJOGL_v2.MyGLWinWrap.MyRenderable;
-import spaceDrawer.MenuUtil.MenuCallback;
 import spaceDrawer.SceneUtil.FieldNameColumn;
 
 public class MainApplication extends Application{
@@ -22,6 +29,7 @@ public class MainApplication extends Application{
 		Application.launch(args);
 	}
 	
+	private PictureDialog pictureDialog;
 	private MyGLWinWrap winWrap;
 	private Drawer drawer;
 	private DataContainer dataContainer;
@@ -29,6 +37,9 @@ public class MainApplication extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		
+		Window wnd = stage;
+		pictureDialog = new PictureDialog(wnd);
 		
 		drawer = new Drawer();
 		dataContainer = new DataContainer();
@@ -46,7 +57,7 @@ public class MainApplication extends Application{
 		SceneUtil.updateListValue(dataContainer);
 		SceneUtil.valueListView.setOnEditCommit(event -> onEditCommitedList(event));
 		
-		SceneUtil.setMenuCallback(() -> screenSaveSwitch = true);
+		SceneUtil.setMenuCallback(() -> {screenSaveSwitch = true; invalidate();});
 
 		stage.show();
 	}
@@ -105,6 +116,35 @@ public class MainApplication extends Application{
 	}
 	
 	private void onScreenSave(GL2 gl2) {
+		
+		int w = dataContainer.screenX;
+		int h = dataContainer.screenY;
+		
+		int bufferSize = w * h * 4;
+		ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize);
+		
+		gl2.glReadBuffer(GL2.GL_FRONT);
+		gl2.glReadPixels(
+				0, 0, dataContainer.screenX, dataContainer.screenY, 
+				GL2.GL_BGRA, GL2.GL_UNSIGNED_BYTE, byteBuffer
+				);
+		
+		WritableImage img = new WritableImage(w, h);
+		PixelWriter writer = img.getPixelWriter();
+		WritablePixelFormat<ByteBuffer> format = WritablePixelFormat.getByteBgraInstance();
+		writer.setPixels(0, 0, w, h, format, byteBuffer , w * 4);
+		
+		PixelReader reader = img.getPixelReader();
+		WritableImage revImg = new WritableImage(w, h);
+		writer = revImg.getPixelWriter();
+		for(int y=0; y<h; y++) {
+			writer.setPixels(0, y, w, 1, reader, 0, h-y-1);
+		}
+		
+		pictureDialog.show();
+		pictureDialog.drawScreen(revImg);
+		pictureDialog.saveImage();
+		pictureDialog.hide();
 		
 		screenSaveSwitch = false;
 	}
