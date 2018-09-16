@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import myJOGL_v2.MyGLUtil;
 import myJOGL_v2.MyGLWinWrap;
 import myJOGL_v2.MyGLWinWrap.MyRenderable;
+import spaceDrawer.SceneUtil.FieldNameColumn;
 
 public class MainApplication extends Application{
 	
@@ -20,9 +21,6 @@ public class MainApplication extends Application{
 		Application.launch(args);
 	}
 	
-	private final int screenX = 320;
-	private final int screenY = 480;
-	private final int fovy = 90;	//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
 	private MyGLWinWrap winWrap;
 	private Drawer drawer;
 	private DataContainer dataContainer;
@@ -43,9 +41,6 @@ public class MainApplication extends Application{
 		
 		SceneUtil.makeButton.setOnAction(event->updateSpace());	
 		
-		dataContainer.screenX = screenX;
-		dataContainer.screenY = screenY;
-		dataContainer.fovy = fovy;
 		SceneUtil.updateListValue(dataContainer);
 		SceneUtil.valueListView.setOnEditCommit(event -> onEditCommitedList(event));
 		
@@ -63,7 +58,7 @@ public class MainApplication extends Application{
 				GL2 gl2 = gl.getGL2();
 				MyGLUtil.setGL(gl2);
 				
-				drawer.init(gl2, screenX, screenY, fovy);
+				drawer.init(gl2, dataContainer);
 			}
 
 			@Override
@@ -76,7 +71,7 @@ public class MainApplication extends Application{
 			
 		});
 		
-		winWrap.getWindow().setSize(screenX, screenY);
+		winWrap.getWindow().setSize(dataContainer.screenX, dataContainer.screenY);
 		winWrap.getWindow().setVisible(true);
 	}
 
@@ -87,11 +82,18 @@ public class MainApplication extends Application{
 	
 	private void updateSpace() {
 		
-		drawer.updateSpace();
+		drawer.updateSpace(dataContainer);
+		winWrap.getWindow().setSize(dataContainer.screenX, dataContainer.screenY);
 		invalidate();
 	}
 	
 	private void onEditCommitedList(EditEvent event) {
+		
+		int listIndex = event.getIndex();
+		String newText = (String)event.getNewValue();
+		
+		FieldNameColumn data = SceneUtil.nameListView.getItems().get(listIndex);
+		SceneUtil.setTextDataToReflectedField(dataContainer, data.fieldName, newText);
 		
 		SceneUtil.updateListValue(dataContainer);
 	}

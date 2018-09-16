@@ -28,42 +28,26 @@ public class Drawer {
 		texSheets = new ArrayList<>();
 	}
 	
-	public void updateSpace() {
+	public void updateSpace(DataContainer dataContainer){
 		
-		starMaker.makeAllData();
-	}
-	
-	public void init(GL2 gl2, int screenX, int screenY, float fovy) {
-		
-		this.screenX = screenX;
-		this.screenY = screenY;
-		this.fovy = fovy;
+		this.screenX = dataContainer.screenX;
+		this.screenY = dataContainer.screenY;
+		this.fovy = dataContainer.fovy;
 		
 		float aspectratio = (float)screenX / screenY;
 		this.fovx = getFovx(aspectratio);
 		
-		starMaker = new StarMaker(this);
+		if(starMaker == null) starMaker = new StarMaker(this);
+		starMaker.makeAllData(dataContainer);
+	}
+	
+	public void init(GL2 gl2, DataContainer dataContainer) {
+		
+		updateSpace(dataContainer);
+		
 		loadTexture(gl2);
 		
-		setupStandard3DProcess(gl2);
-		
-		gl2.glViewport(0, 0, screenX, screenY);
-		
-		gl2.glMatrixMode(GL2.GL_PROJECTION);
-		gl2.glLoadIdentity();
-		
-		glu.gluPerspective(fovy, aspectratio, 0.1f, 1000);
-		
-		gl2.glMatrixMode(GL2.GL_MODELVIEW);
-		gl2.glLoadIdentity();
-		
-		setLighting(gl2); 	//ライティングはワールド座標系で行われるので視野変換の設定前に設定します
-							//ライティング設定はモデル変換の影響を受けますが影響を与えはしません
-		
-		My3DVectorF cameraPoint = new My3DVectorF(0,0,0);
-		My3DVectorF lookPoint = new My3DVectorF(0,0,-1);
-		
-		setView(gl2, cameraPoint, lookPoint);
+		setupStandard3DProcess(gl2);	
 	}
 	
 	private float getFovx(float aspectratio){
@@ -115,6 +99,25 @@ public class Drawer {
 	}
 	
 	public void draw(GL2 gl2) {
+		
+		gl2.glViewport(0, 0, screenX, screenY);
+		
+		gl2.glMatrixMode(GL2.GL_PROJECTION);
+		gl2.glLoadIdentity();
+		
+		float aspectratio = (float)screenX / screenY;
+		glu.gluPerspective(fovy, aspectratio, 0.1f, 1000);
+		
+		gl2.glMatrixMode(GL2.GL_MODELVIEW);
+		gl2.glLoadIdentity();
+		
+		setLighting(gl2); 	//ライティングはワールド座標系で行われるので視野変換の設定前に設定します
+							//ライティング設定はモデル変換の影響を受けますが影響を与えはしません
+		
+		My3DVectorF cameraPoint = new My3DVectorF(0,0,0);
+		My3DVectorF lookPoint = new My3DVectorF(0,0,-1);
+		
+		setView(gl2, cameraPoint, lookPoint);
 		
 		gl2.glClear(GL2.GL_COLOR_BUFFER_BIT|GL2.GL_DEPTH_BUFFER_BIT);
         gl2.glClearColor(0f, 0f, 0f, 0f);

@@ -8,17 +8,14 @@ import spaceDrawer.Drawer.TextureFile;
 
 public class StarMaker {
 	
-	float farthestDistance = 1000;
-	
-	int currentStarsNumber = 100;     
-	float distancePercentageNearest  = 20;
-	float distancePercentageFarthest = 70;
-	float distancePercentegeTextureEnabled    = 30 ;
-	
-	int backGroundPointStars = 3000;
-	
-	int currentNebulaeNumber      =10 ;
-	float distanceNebulaNearest = 40;
+	float farthestDistance;
+	int currentStarsNumber;     
+	float distancePercentageNearest;
+	float distancePercentageFarthest;
+	float distancePercentegeTextureEnabled;
+	int backGroundPointStars;
+	int currentNebulaeNumber;
+	float distanceNebulaNearest;
 	
 	public static final int maxStarData = 500; 
 	public static final int maxPointStarData = 5000;
@@ -44,12 +41,22 @@ public class StarMaker {
 	public StarMaker(Drawer drawer){
 		
 		this.drawer = drawer;
-		
-		makeAllData();
 	}
 	
-	public void makeAllData(){
+	public void makeAllData(DataContainer dc){
 
+		farthestDistance = dc.farthestDistance;
+		
+		currentStarsNumber = dc.currentStarsNumber;     
+		distancePercentageNearest  = dc.distancePercentageNearest;
+		distancePercentageFarthest = dc.distancePercentageFarthest;
+		distancePercentegeTextureEnabled = dc.distancePercentegeTextureEnabled;
+		
+		backGroundPointStars = dc.backGroundPointStars;
+		
+		currentNebulaeNumber = dc.currentNebulaeNumber;
+		distanceNebulaNearest = dc.distanceNebulaNearest;
+		
 		makeStarsData();
 		makePointStarsData();
 		makeNebulaeData();

@@ -87,7 +87,7 @@ public class SceneUtil{
 		return box;
 	}
 	
-	public enum DataColumn{
+	public enum FieldNameColumn{
 		
 		Screen_X("screenX","pix"),
 		Screen_Y("screenY","pix"),
@@ -107,18 +107,17 @@ public class SceneUtil{
 		public String fieldName;
 		public String unit;
 		
-		DataColumn(String fieldName, String unit){
+		FieldNameColumn(String fieldName, String unit){
 			this.fieldName = fieldName;
 			this.unit = unit;
 		}
 	}
-	
+	public static ListView<FieldNameColumn> nameListView = new ListView<>();
 	public static ListView<String> valueListView = new ListView<>();
 	
 	private static Pane genTablePane(){
 		
 		DataContainer dataContainer = new DataContainer();
-		ListView<DataColumn> nameListView = new ListView<>();
 		
 		HBox pane = new HBox();
 		
@@ -130,9 +129,9 @@ public class SceneUtil{
 		valueListView.setEditable(true);
 		valueListView.setCellFactory(TextFieldListCell.forListView());
 		
-		DataColumn nameColumn[] = new DataColumn[DataColumn.values().length];
+		FieldNameColumn nameColumn[] = new FieldNameColumn[FieldNameColumn.values().length];
 		
-		for(DataColumn e: DataColumn.values()){
+		for(FieldNameColumn e: FieldNameColumn.values()){
 			
 			nameColumn[e.ordinal()] = e;	
 		}
@@ -146,9 +145,9 @@ public class SceneUtil{
 	
 	public static void updateListValue(DataContainer dataContainer) {
 		
-		String valueColumn[] = new String[DataColumn.values().length];
+		String valueColumn[] = new String[FieldNameColumn.values().length];
 		
-		for(DataColumn e: DataColumn.values()){
+		for(FieldNameColumn e: FieldNameColumn.values()){
 		
 			valueColumn[e.ordinal()] = getReflectedFieldAsString(dataContainer,e.fieldName) +" "+ e.unit;
 					
@@ -171,6 +170,50 @@ public class SceneUtil{
 		
 		}
 		return "null";
+	}
+	
+	public static boolean setTextDataToReflectedField
+		(Object object, String fieldName, String text){
+		
+		Class<?> clazz = object.getClass();
+		
+		try{
+		
+			Field field = clazz.getDeclaredField(fieldName);
+			
+			Class<?> type = field.getType();
+			
+			switch(type.getName()){
+			
+			case "java.lang.String":
+				field.set(object, text);
+				break;
+
+			case "int":
+				field.set(object, Integer.valueOf(text));
+				break;
+				
+			case "boolean": 
+				field.set(object, Boolean.valueOf(text));
+				break;
+				
+			case "float":
+				field.set(object, Float.valueOf(text));
+				break;	
+				
+			case "double":
+				field.set(object, Double.valueOf(text));
+				break;
+				
+			default:
+				return false;
+			}
+			
+		}catch(Exception e){
+		
+			return false;
+		}
+		return true;
 	}
 
 }

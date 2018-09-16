@@ -2,9 +2,9 @@ package spaceDrawer;
 
 public class DataContainer {
 	
-	public int screenX;
-	public int screenY;
-	public float fovy;
+	int screenX = 320;
+	int screenY = 480;
+	float fovy = 90;		//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
 	
 	float farthestDistance = 1000;
 	
