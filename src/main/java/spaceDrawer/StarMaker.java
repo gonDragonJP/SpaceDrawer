@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
+import myJOGL_v2.MyGLUtil;
 import spaceDrawer.Drawer.TextureFile;
 
 public class StarMaker {
@@ -32,7 +33,7 @@ public class StarMaker {
 	
 	private static class StarData{
 		
-		public float x,y,z,rot,a,r,g,b;
+		public float x,y,z,rotX,rotY,rotZ,a,r,g,b;
 		public int texIndex;	
 	}
 	
@@ -115,7 +116,9 @@ public class StarMaker {
 			float angleY = drawer.fovy * ((float)Math.random() - 0.5f);
 			nebulaData[i].x = nebulaData[i].z * (float)Math.tan(angleX * drawer.radian);
 			nebulaData[i].y = nebulaData[i].z * (float)Math.tan(angleY * drawer.radian);
-			nebulaData[i].rot = 360 * (float)Math.random();
+			nebulaData[i].rotX = (float)Math.random()*80-40;
+			nebulaData[i].rotY = (float)Math.random()*80-40;
+			nebulaData[i].rotZ = (float)Math.random()*360;
 			nebulaData[i].texIndex = 
 					TextureFile.firstNebulaIndex + (int)(nebulaTexNumber * Math.random());
 		}
@@ -208,23 +211,36 @@ public class StarMaker {
 		gl2.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
 
 		gl2.glEnable(GL2.GL_BLEND);	
-		gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE_MINUS_SRC_ALPHA);
-		//gl2.glDisable(GL2.GL_LIGHTING);
-
+		gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE);
+		
 		for(int i=0; i<currentNebulaeNumber; i++){
 
 			int texIndex = nebulaData[i].texIndex;
 			int texGLID = drawer.texSheets.get(texIndex).texture.getTextureObject();
 			
+			//gl2.glTexEnvf
+			//(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_BLEND);
+			
+			//float[] blendColorArr = {1,1,1,0.1f};
+			//FloatBuffer blendColor = FloatBuffer.wrap(blendColorArr);
+			//gl2.glTexEnvfv
+			//(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_COLOR, blendColor);
+			//MyGLUtil.changeTexColor(blendColor);
+			
+			//gl2.glTexEnvf(GL2.GL_TEXTURE_ENV,GL2.GL_COMBINE_RGB, GL2.GL_SUBTRACT);
+			//gl2.glTexEnvf(GL2.GL_TEXTURE_ENV,GL2.GL_SOURCE1_RGB, GL2.GL_CONSTANT);
+			
 			gl2.glBindTexture(GL2.GL_TEXTURE_2D, texGLID);
 
 			gl2.glPushMatrix();
-			drawer.rotateAndTranslate(gl2,(float)Math.random()*80-40,(float)Math.random()*80-40,
-				nebulaData[i].rot,
-				nebulaData[i].x,
-				nebulaData[i].y,
-				nebulaData[i].z
-				);
+			drawer.rotateAndTranslate(gl2,
+					nebulaData[i].rotX,
+					nebulaData[i].rotY,
+					nebulaData[i].rotZ,
+					nebulaData[i].x,
+					nebulaData[i].y,
+					nebulaData[i].z
+					);
 			drawTexRect(gl2);
 			gl2.glPopMatrix();
 			
