@@ -17,5 +17,6 @@ public class DataContainer {
 	
 	int currentNebulaeNumber      =10 ;
 	float distanceNebulaNearest = 40;
+	float textureTransparency = 60; //Textureのアルファ値に乗算された透明度となります
 
 }

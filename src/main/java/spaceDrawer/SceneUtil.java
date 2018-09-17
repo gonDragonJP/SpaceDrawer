@@ -93,7 +93,8 @@ public class SceneUtil{
 		SmallStarNumber("backGroundPointStars",""),
 		
 		NebulaNumber("currentNebulaeNumber",""),
-		NearestDistance_NB("distanceNebulaNearest","%");
+		NearestDistance_NB("distanceNebulaNearest","%"),
+		TextureTransparency("textureTransparency","%");
 		
 		public String fieldName;
 		public String unit;

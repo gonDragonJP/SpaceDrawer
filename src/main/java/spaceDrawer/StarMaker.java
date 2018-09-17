@@ -17,6 +17,7 @@ public class StarMaker {
 	int backGroundPointStars;
 	int currentNebulaeNumber;
 	float distanceNebulaNearest;
+	float textureTransparency;
 	
 	public static final int maxStarData = 500; 
 	public static final int maxPointStarData = 5000;
@@ -57,6 +58,7 @@ public class StarMaker {
 		
 		currentNebulaeNumber = dc.currentNebulaeNumber;
 		distanceNebulaNearest = dc.distanceNebulaNearest;
+		textureTransparency = dc.textureTransparency;
 		
 		makeStarsData();
 		makePointStarsData();
@@ -211,24 +213,20 @@ public class StarMaker {
 		gl2.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
 
 		gl2.glEnable(GL2.GL_BLEND);	
-		gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE);
+		gl2.glBlendFunc(GL2.GL_SRC_ALPHA,GL2.GL_ONE_MINUS_SRC_ALPHA);
+		//blendFunc はアルファブレンドの方法を指定します
+		
+		gl2.glDisable(GL2.GL_LIGHTING);	//下地の色をそのまま活かすのでライトは消します
+		gl2.glColor4f(1, 1, 1, textureTransparency/100); 	//下地の色
+		
+		gl2.glTexEnvf
+			(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
+		//TexEnvでモードをModulateに指定(default) : TextureのRGBA全てが下地の色との積になります
 		
 		for(int i=0; i<currentNebulaeNumber; i++){
 
 			int texIndex = nebulaData[i].texIndex;
 			int texGLID = drawer.texSheets.get(texIndex).texture.getTextureObject();
-			
-			//gl2.glTexEnvf
-			//(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_BLEND);
-			
-			//float[] blendColorArr = {1,1,1,0.1f};
-			//FloatBuffer blendColor = FloatBuffer.wrap(blendColorArr);
-			//gl2.glTexEnvfv
-			//(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_COLOR, blendColor);
-			//MyGLUtil.changeTexColor(blendColor);
-			
-			//gl2.glTexEnvf(GL2.GL_TEXTURE_ENV,GL2.GL_COMBINE_RGB, GL2.GL_SUBTRACT);
-			//gl2.glTexEnvf(GL2.GL_TEXTURE_ENV,GL2.GL_SOURCE1_RGB, GL2.GL_CONSTANT);
 			
 			gl2.glBindTexture(GL2.GL_TEXTURE_2D, texGLID);
 
