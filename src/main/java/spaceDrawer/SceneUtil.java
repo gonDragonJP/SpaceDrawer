@@ -2,18 +2,25 @@ package spaceDrawer;
 
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -22,10 +29,15 @@ import javafx.stage.Stage;
 import spaceDrawer.MenuUtil.BackGroundColor;
 import spaceDrawer.MenuUtil.MenuCallback;
 import spaceDrawer.MenuUtil.OnOrOff;
+import sun.rmi.runtime.Log;
 
 public class SceneUtil{
 	
-	public static void initStage(Stage stage){
+	private static DataContainer dataContainer;
+	
+	public static void initStage(Stage stage, DataContainer dc){
+		
+		dataContainer = dc;
 		
 		stage.setTitle("SpaceDrawer ver1.0");
 		stage.setWidth(650);
@@ -107,38 +119,54 @@ public class SceneUtil{
 			this.unit = unit;
 		}
 	}
-	public static ListView<FieldNameColumn> nameListView = new ListView<>();
-	public static ListView<String> valueListView = new ListView<>();
+	
+	public static TableView<FieldNameColumn> tableView = new TableView<>(); 
+	public static TableColumn <FieldNameColumn, String>[] columns= new TableColumn[2];
 	
 	private static Pane genTablePane(){
 		
-		DataContainer dataContainer = new DataContainer();
+		Pane pane = new Pane();
 		
-		HBox pane = new HBox();
+		tableView.setPrefWidth(420);
+		tableView.setPrefHeight(300);
 		
-		nameListView.setPrefWidth(200);
-		nameListView.setPrefHeight(300);
-		nameListView.setOnScrollFinished(event-> synchronizeScrollBars(event));// ã@î\ÇµÇ‹ÇπÇÒÅ@orz
-		valueListView.setPrefWidth(200);
-		valueListView.setPrefHeight(300);
+		columns[0] = new TableColumn<>("Variable Name");
+		columns[0].setPrefWidth(200);
+		columns[0].setCellValueFactory(param -> new SimpleStringProperty(param.getValue().toString()));
 		
-		valueListView.setEditable(true);
-		valueListView.setCellFactory(TextFieldListCell.forListView());
-		
-		FieldNameColumn nameColumn[] = new FieldNameColumn[FieldNameColumn.values().length];
-		
-		for(FieldNameColumn e: FieldNameColumn.values()){
+		columns[1] = new TableColumn<>("Value");
+		columns[1].setPrefWidth(200);
+		columns[1].setCellValueFactory(param ->{
 			
-			nameColumn[e.ordinal()] = e;	
-		}
+				String valText = getReflectedFieldAsString(dataContainer, param.getValue().fieldName);
+				valText += param.getValue().unit;
+				
+				return new SimpleStringProperty(valText);
+			});
+		columns[1].setCellFactory(TextFieldTableCell.forTableColumn());
+		columns[1].setOnEditCommit(event -> onEditCommited(event));
 		
-		nameListView.getItems().addAll(nameColumn);
-	
-		pane.getChildren().addAll(nameListView, valueListView);
+		tableView.getColumns().addAll(columns);
+		tableView.setEditable(true);
+		
+		ObservableList<FieldNameColumn> tableData = FXCollections.observableArrayList();
+		tableData.setAll(FieldNameColumn.values());
+		tableView.itemsProperty().setValue(tableData);
+		
+		pane.getChildren().add(tableView);
 		
 		return pane;
 	}
 	
+	private static void onEditCommited(CellEditEvent event) {
+		
+		String newText = (String)event.getNewValue();
+		FieldNameColumn data = (FieldNameColumn)event.getRowValue();
+		
+		SceneUtil.setTextDataToReflectedField(dataContainer, data.fieldName, newText);
+		tableView.refresh();
+	}
+
 	public static void updateListValue(DataContainer dataContainer) {
 		
 		String valueColumn[] = new String[FieldNameColumn.values().length];
@@ -148,13 +176,28 @@ public class SceneUtil{
 			valueColumn[e.ordinal()] = getReflectedFieldAsString(dataContainer,e.fieldName) +" "+ e.unit;
 					
 		}
-		valueListView.getItems().clear();
-		valueListView.getItems().addAll(valueColumn);
+		//valueListView.getItems().clear();
+		//valueListView.getItems().addAll(valueColumn);
+	}
+	
+	private static ArrayList<ScrollBar> getScrollBarsFromView(ListView listView) {
+		
+		ArrayList<ScrollBar> scrollBars = new ArrayList<>();
+		
+		for(Node node : listView.lookupAll(".scroll-bar")) {
+			
+			if(node instanceof ScrollBar) {
+				
+				scrollBars.add((ScrollBar)node);
+			}
+		}		
+		return scrollBars;
 	}
 	
 	public static void synchronizeScrollBars(ScrollEvent event) {
 		
 		double movement = event.getDeltaY();
+		
 		
 	}
 	

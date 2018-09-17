@@ -10,11 +10,13 @@ import com.jogamp.opengl.GLProfile;
 
 import javafx.application.Application;
 import javafx.scene.control.ListView.EditEvent;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
+import javafx.scene.input.InputMethodEvent;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import myJOGL_v2.MyGLUtil;
@@ -50,12 +52,11 @@ public class MainApplication extends Application{
 	
 	private void setupStage(Stage stage){
 		
-		SceneUtil.initStage(stage);
+		SceneUtil.initStage(stage, dataContainer);
 		
 		SceneUtil.makeButton.setOnAction(event->updateSpace());	
 		
 		SceneUtil.updateListValue(dataContainer);
-		SceneUtil.valueListView.setOnEditCommit(event -> onEditCommitedList(event));
 		
 		SceneUtil.setMenuCallback(() -> {screenSaveSwitch = true; invalidate();});
 
@@ -104,7 +105,7 @@ public class MainApplication extends Application{
 		invalidate();
 	}
 	
-	private void onEditCommitedList(EditEvent event) {
+	private void onEditCommitedList(CellEditEvent event) {/*
 		
 		int listIndex = event.getIndex();
 		String newText = (String)event.getNewValue();
@@ -112,7 +113,7 @@ public class MainApplication extends Application{
 		FieldNameColumn data = SceneUtil.nameListView.getItems().get(listIndex);
 		SceneUtil.setTextDataToReflectedField(dataContainer, data.fieldName, newText);
 		
-		SceneUtil.updateListValue(dataContainer);
+		SceneUtil.updateListValue(dataContainer);*/
 	}
 	
 	private void onScreenSave(GL2 gl2) {
