@@ -3,6 +3,7 @@ package spaceDrawer;
 
 import java.lang.reflect.Field;
 
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -80,6 +82,7 @@ public class SceneUtil{
 	
 	public enum FieldNameColumn{
 		
+		IsEnabledTestPlanet("isEnabledTestPlanet",""),
 		Screen_X("screenX","pix"),
 		Screen_Y("screenY","pix"),
 		Fovy("fovy","degree"),
@@ -115,6 +118,7 @@ public class SceneUtil{
 		
 		nameListView.setPrefWidth(200);
 		nameListView.setPrefHeight(300);
+		nameListView.setOnScrollFinished(event-> synchronizeScrollBars(event));// ã@î\ÇµÇ‹ÇπÇÒÅ@orz
 		valueListView.setPrefWidth(200);
 		valueListView.setPrefHeight(300);
 		
@@ -146,6 +150,12 @@ public class SceneUtil{
 		}
 		valueListView.getItems().clear();
 		valueListView.getItems().addAll(valueColumn);
+	}
+	
+	public static void synchronizeScrollBars(ScrollEvent event) {
+		
+		double movement = event.getDeltaY();
+		
 	}
 	
 	private static String getReflectedFieldAsString(Object object, String fieldName){

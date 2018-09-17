@@ -67,11 +67,13 @@ public class Drawer {
 		nebula2(5,"nebula4.png"),
 		nebula3(6,"nebula10.png"),
 		nebula4(7,"nebula11.png"),
-		nebula5(8,"nebula12.png");
+		nebula5(8,"nebula12.png"),
+		nebula6(9,"nebula13.png"),
+		nebula7(10,"nebula14.png");
 		
 		public static int maxPlanetIndex = 3;
 		public static int firstNebulaIndex = 4;
-		public static int maxNebulaIndex = 8;
+		public static int maxNebulaIndex = 10;
 		
 		public int resID;
 		public String fileName;
@@ -98,7 +100,7 @@ public class Drawer {
 		}
 	}
 	
-	public void draw(GL2 gl2) {
+	public void draw(GL2 gl2, DataContainer dataContainer) {
 		
 		gl2.glViewport(0, 0, screenX, screenY);
 		
@@ -123,7 +125,7 @@ public class Drawer {
         gl2.glClearColor(0f, 0f, 0f, 0f);
        
 		starMaker.drawPointStars(gl2);
-		testDraw(gl2);	
+		if(dataContainer.isEnabledTestPlanet) testDraw(gl2);	
 		starMaker.drawStars(gl2);	
 		starMaker.drawNebulae(gl2);
 		

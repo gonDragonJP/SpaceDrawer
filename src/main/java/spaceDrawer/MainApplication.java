@@ -81,7 +81,7 @@ public class MainApplication extends Application{
 				
 				GL2 gl2 = gl.getGL2();
 				
-				drawer.draw(gl2);
+				drawer.draw(gl2, dataContainer);
 				
 				if(screenSaveSwitch) onScreenSave(gl2);
 			}

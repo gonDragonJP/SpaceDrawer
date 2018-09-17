@@ -2,6 +2,8 @@ package spaceDrawer;
 
 public class DataContainer {
 	
+	boolean isEnabledTestPlanet = true;
+	
 	int screenX = 320;
 	int screenY = 480;
 	float fovy = 90;		//‰æ–Êc•ûŒü‚ÌƒJƒƒ‰‚Ì‰æŠp
