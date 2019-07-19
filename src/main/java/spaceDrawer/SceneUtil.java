@@ -4,7 +4,6 @@ package spaceDrawer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,7 +28,6 @@ import javafx.stage.Stage;
 import spaceDrawer.MenuUtil.BackGroundColor;
 import spaceDrawer.MenuUtil.MenuCallback;
 import spaceDrawer.MenuUtil.OnOrOff;
-import sun.rmi.runtime.Log;
 
 public class SceneUtil{
 	
